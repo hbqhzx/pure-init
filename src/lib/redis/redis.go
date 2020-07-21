@@ -1,9 +1,10 @@
 package redis
 
 import (
+	"time"
+
 	"github.com/olebedev/config"
 	"gopkg.in/redis.v5"
-	"time"
 )
 
 var Client *redis.Client

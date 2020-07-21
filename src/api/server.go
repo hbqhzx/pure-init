@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/server"
+	"fmt"
 	"lib/config"
 	"lib/db"
 	"lib/log"
@@ -20,5 +21,7 @@ func main() {
 		return
 	}
 	db.InitDBWithConfig(dbConf)
+	fmt.Println("welcome use pure-init")
 	server.StartHttp("0.0.0.0:8022")
+	fmt.Println("8022")
 }
