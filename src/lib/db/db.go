@@ -2,16 +2,17 @@ package db
 
 import (
 	"fmt"
+	"lib/obj"
+	"os"
+
 	"github.com/cihub/seelog"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/olebedev/config"
-	"lib/obj"
-	"os"
 )
 
 const (
-	DBSingularTable     = true
+	DBSingularTable = true
 )
 
 var (
