@@ -1,0 +1,13 @@
+debug:
+  address: "0.0.0.0:8022"
+  redis:
+    addr: 127.0.0.1:6379
+  database:
+    username: root
+    password: 123456
+    protocal: "tcp"
+    address: "127.0.0.1:3306"
+    db: "project"
+    params: "collation=utf8_general_ci&parseTime=true&loc=Local&readTimeout=3s&timeout=3s&writeTimeout=3s"
+    max_open_conns: 2000
+    max_idle_conns: 1000

@@ -1,0 +1,14 @@
+<seelog minlevel="trace">
+    <outputs formatid="main">
+        <filter levels="info,warn,error,critical">
+            <rollingfile type="date" filename="../log/deploy-api.log" datepattern="2006-01-02" maxrolls="10"/>
+        </filter>
+        <filter levels="trace,debug">
+            <rollingfile type="date" filename="../log/deploy-api-debug.log" datepattern="2006-01-02" maxrolls="10"/>
+        </filter>
+    </outputs>
+ 
+    <formats>
+        <format id="main" format="[%Date %Time][%LEVEL][%RelFile:%Line] %Msg%n"/>
+    </formats>
+</seelog>
