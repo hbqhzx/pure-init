@@ -1,0 +1,32 @@
+{
+    "specversion": "v0.2",
+    "type": "deploy",
+    "source": "APP",
+    "subject": [
+        "wizard-tp-used"
+    ],
+    "id": "deploy-server_227341",
+    "time": 1556278039000,
+    "tenant": "jcloud",
+    "corp": "product",
+    "dept": "",
+    "product": "ark-test",
+    "relatedProduct": [
+        "ark-test"
+    ],
+    "sys": "tpmonitor-ark",
+    "app": "wizard-tp-used",
+    "operator": "zhoushuke",
+    "objectType": "",
+    "objectName": null,
+    "desc": "xxxxxxx",
+    "data": {
+        "deployment": "deploy-server",
+        "env": "STAGING",
+        "group": [
+            "online"
+        ],
+        "pdl": "ark-test",
+        "version": null
+    }
+}

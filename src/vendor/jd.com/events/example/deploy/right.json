@@ -1,0 +1,50 @@
+{
+    "app": "wyj-test",
+    "corp": "product",
+    "data": {
+        "app": "wyj-test",
+        "cfg_version": [
+            "2020"
+        ],
+        "corp": "solution-service",
+        "deployment": "balloon",
+        "end_time": 1527039300,
+        "env": "STAGING",
+        "group": [
+            "plan"
+        ],
+        "host_ip": [
+            "10.160.13.98"
+        ],
+        "id": "balloon_58396",
+        "idc": [
+            "gyyhb"
+        ],
+        "ins": [
+            "6.wyj-test"
+        ],
+        "operation": "DeployTypeUpdate",
+        "operator": "wyj",
+        "pdl": "ark-test",
+        "status": "DEPLOY_STATUS_FINISH",
+        "sys": "wyj-plan",
+        "system": "balloon",
+        "update_time": 1527039300
+    },
+    "dept": "pid",
+    "desc": " \u90e8\u7f72\uff1a\u6210\u529f",
+    "objectName": [
+        "wyj-test"
+    ],
+    "objectType": "APP",
+    "operator": "wyj",
+    "product": "ark-test",
+    "relatedProduct": "ark-test",
+    "source": "APP",
+    "subject": [
+        "wyj-test"
+    ],
+    "sys": "wyj-plan",
+    "tenant": "jcloud",
+    "type": "deploy"
+}
