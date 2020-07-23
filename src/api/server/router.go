@@ -58,6 +58,7 @@ func initHttp() {
 
 		//Router{"/hello", router.GET, controller.Testtsdb},
 		Router{"/hello", router.GET, controller.SayHi},
+		Router{"/kafka", router.GET, controller.Kafka},
 
 	}
 
