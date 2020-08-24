@@ -16,34 +16,21 @@ readonly TARGET=$OUTPUT/target
 function compile
 {
     (
-        export GOPATH=$(pwd)
-        #./bin/test > db/deploy.sql
-        go install api
+        go build -o bin/pure-init
     )
 }
 
 function prepare_package
 {
-
-    if [[ -z ${1} ]]
-    then
-        $MKDIR $PACKAGE_DIR/{bin,etc,run,log}
-        $CP bin etc  $PACKAGE_DIR
-        $MKDIR $OUTPUT/{bin,etc,run,log}
-        $CP bin etc $OUTPUT #测试环境需要
-    else
-        $MKDIR $OUTPUT/{bin,etc,run,log}
-        $CP bin etc $OUTPUT
-    fi
-
-
+    $MKDIR $OUTPUT/{bin,etc}
+    $CP bin etc $OUTPUT #测试环境需要
 }
 
 function main
 {
     $RM $OUTPUT
     compile
-    prepare_package "$@"
+    prepare_package
 }
 
 main "$@"
