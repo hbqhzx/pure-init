@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"pure-init/api/controller"
 	"pure-init/lib/log"
@@ -92,5 +91,4 @@ func StartHttp(addr string) {
 	initHttp()
 	log.Info("init http succeed")
 	router.Run(addr)
-	fmt.Println(123)
 }
