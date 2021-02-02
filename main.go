@@ -1,29 +1,38 @@
 package main
 
 import (
-	"fmt"
 	"pure-init/api/server"
 	"pure-init/lib/config"
 	"pure-init/lib/db"
 	"pure-init/lib/log"
 	"pure-init/lib/redis"
+	_ "pure-init/docs"
 )
 
+// @title wukong
+// @version 1.0
+
+// @contact.name 赵晓
+// @contact.email zhaoxiao248@jd.com
+
+// @tag.name hello
+// @tag.description 健康检查
+
 func main() {
+	log.InitZapLog()
+	defer log.Sync()
 
 	if err := config.LoadCofig(); err != nil {
 		return
 	}
 	redisConf, _ := config.Config.Get("redis")
 	redis.InitRedisWithConfig(redisConf)
-	fmt.Println("redis is ok")
+
 	dbConf, _ := config.Config.Get("database")
 	if err := log.InitLogWithConfig("api"); err != nil {
 		return
 	}
 	db.InitDBWithConfig(dbConf)
-	fmt.Println("mysql is ok")
-	fmt.Println("welcome use pure-init")
-	server.StartHttp("0.0.0.0:8022")
-	fmt.Println("8022")
+
+	server.StartHttp("0.0.0.0:8023")
 }

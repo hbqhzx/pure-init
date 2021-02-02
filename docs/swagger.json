@@ -1,0 +1,78 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "wukong",
+        "contact": {
+            "name": "赵晓",
+            "email": "zhaoxiao248@jd.com"
+        },
+        "license": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/hello": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hello"
+                ],
+                "summary": "服务健康状态",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dao.GetHelloRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dao.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dao.GetHelloRes": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dao.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "健康检查",
+            "name": "hello"
+        }
+    ]
+}

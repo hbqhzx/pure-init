@@ -1,0 +1,49 @@
+definitions:
+  dao.GetHelloRes:
+    properties:
+      code:
+        type: integer
+      data:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dao.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+info:
+  contact:
+    email: zhaoxiao248@jd.com
+    name: 赵晓
+  license: {}
+  title: wukong
+  version: "1.0"
+paths:
+  /hello:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dao.GetHelloRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dao.Response'
+      summary: 服务健康状态
+      tags:
+      - hello
+swagger: "2.0"
+tags:
+- description: 健康检查
+  name: hello

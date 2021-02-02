@@ -1,19 +1,22 @@
 package controller
 
 import (
+	def "pure-init/lib/db"
+	"pure-init/lib/user"
 	"errors"
 	"fmt"
-	def "pure-init/lib/db"
+	"reflect"
 	"regexp"
 	"time"
 
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 type State struct {
 	actionAborted bool
 	formParsed    bool
 	query         *def.Query
+	user          *user.User
 	PayloadForm   *paramForm
 }
 
@@ -75,24 +78,35 @@ func (ctx *Context) traceInfo() gin.H {
 
 func (ctx *Context) jsonSuccess(ret ...interface{}) {
 	if len(ret) > 0 {
-		ctx.jsonOutput(gin.H{
-			"trace": ctx.traceInfo(),
-			"status": gin.H{
-				"code": "OK",
-				"msg":  "ok",
-			},
-			"data": gin.H{
-				"item":  ret[0],
-				"pager": ctx.GetPager(),
-			},
-		})
+		kind := reflect.TypeOf(ret[0]).Kind().String()
+		//数组类型返回格式
+		if kind == "slice" || kind == "array" {
+			ctx.jsonOutput(gin.H{
+				"trace":   ctx.traceInfo(),
+				"code":    0,
+				"message": "ok",
+				"success": true,
+				"data": gin.H{
+					"list":  ret[0],
+					"pager": ctx.GetPager(),
+				},
+			})
+		} else {
+			ctx.jsonOutput(gin.H{
+				"trace":   ctx.traceInfo(),
+				"code":    0,
+				"message": "ok",
+				"success": true,
+				"data":    ret[0],
+			})
+		}
+
 	} else {
 		ctx.jsonOutput(gin.H{
-			"trace": ctx.traceInfo(),
-			"status": gin.H{
-				"code": "OK",
-				"msg":  "ok",
-			},
+			"trace":   ctx.traceInfo(),
+			"code":    0,
+			"message": "ok",
+			"success": true,
 		})
 	}
 }
@@ -104,19 +118,36 @@ func (ctx *Context) jsonError(err error) {
 func (ctx *Context) jsonFailure(ret ...interface{}) {
 	if len(ret) > 0 {
 		ctx.jsonOutput(gin.H{
-			"trace": ctx.traceInfo(),
-			"status": gin.H{
-				"code": "ClientError",
-				"msg":  fmt.Sprintf("%s", ret[0]),
-			},
+			"trace":   ctx.traceInfo(),
+			"code":    -1,
+			"message": fmt.Sprintf("%s", ret[0]),
+			"success": false,
 		})
 	} else {
 		ctx.jsonOutput(gin.H{
-			"trace": ctx.traceInfo(),
-			"status": gin.H{
-				"code": "ClientError",
-				"msg":  "error",
-			},
+			"trace":   ctx.traceInfo(),
+			"code":    -1,
+			"message": "error",
+			"success": false,
+		})
+	}
+}
+
+//登陆失败专用
+func (ctx *Context) jsonLoginFailure(ret ...interface{}) {
+	if len(ret) > 0 {
+		ctx.jsonOutput(gin.H{
+			"trace":   ctx.traceInfo(),
+			"code":    401,
+			"message": fmt.Sprintf("%s", ret[0]),
+			"success": false,
+		})
+	} else {
+		ctx.jsonOutput(gin.H{
+			"trace":   ctx.traceInfo(),
+			"code":    401,
+			"message": "error",
+			"success": false,
 		})
 	}
 }
@@ -146,6 +177,14 @@ func (state *State) IsFormParsed() bool {
 
 func (state *State) SetFormParsed() {
 	state.formParsed = true
+}
+
+func (state *State) SetUser(user *user.User) {
+	state.user = user
+}
+
+func (state *State) GetUser() *user.User {
+	return state.user
 }
 
 func (state *State) SetQuery(query *def.Query) {

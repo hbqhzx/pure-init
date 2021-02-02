@@ -1,9 +1,9 @@
 package db
 
 import (
-	"fmt"
 	. "pure-init/lib/exception"
 	"pure-init/lib/obj"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -16,9 +16,9 @@ import (
  ********************************************************/
 
 type Pager struct {
-	Page       int `json:"page"`
-	PageSize   int `json:"page_size"`
-	TotalCount int `json:"total_count"`
+	PageNum  int `json:"pageNum"`
+	PageSize int `json:"pageSize"`
+	Total    int `json:"total"`
 }
 
 type Sorting struct {
@@ -94,7 +94,7 @@ func (myDB *MyDB) FindAll(data interface{}, query ...interface{}) {
 	if pager != nil {
 		var count int
 		CheckResult(db.Offset(nil).Limit(nil).Count(&count))
-		pager.TotalCount = count
+		pager.Total = count
 	}
 	// myDB.CopyDB(data)
 }
@@ -147,7 +147,7 @@ func UpdateOne(data interface{}, to interface{}, query ...interface{}) int {
 
 func (myDB *MyDB) UpdateOne(data interface{}, to interface{}, query ...interface{}) int {
 	query = append(query, Pager{
-		Page:     1,
+		PageNum:  0,
 		PageSize: 1,
 	})
 	return myDB.UpdateAll(data, to, query...)
@@ -200,7 +200,7 @@ func (myDB *MyDB) CopyDB(data interface{}) {
  ********************************************************************/
 
 func (pager *Pager) Offset() int {
-	return (pager.Page - 1) * pager.PageSize
+	return (pager.PageNum - 1) * pager.PageSize
 }
 
 func (pager *Pager) Load(db *gorm.DB) *gorm.DB {
@@ -260,9 +260,9 @@ func parseCondition(db *gorm.DB, param *map[string]interface{}) *gorm.DB {
 		default:
 			switch v.(type) {
 			case []string, []int:
-				db = db.Where(k+" in (?)", v)
+				db = db.Where("`"+k+"`"+" in (?)", v)
 			default:
-				db = db.Where(k+" = ?", v)
+				db = db.Where("`"+k+"`"+" = ?", v)
 			}
 		}
 	}

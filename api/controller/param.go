@@ -2,16 +2,17 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
-	def "pure-init/lib/db"
-	"pure-init/lib/obj"
-	"regexp"
 	"strconv"
 	"strings"
+
+	def "pure-init/lib/db"
+	"pure-init/lib/obj"
 )
 
 const (
-	PageSizeDefault = 30
+	PageSizeDefault = 10
 	PageSizeMin     = 1
 	PageSizeMax     = 30000
 )
@@ -19,6 +20,7 @@ const (
 type R string // Required
 type O string // Optional
 type E string // Optional (padding with empty)
+type RS string
 
 type paramForm struct {
 	Form    url.Values
@@ -47,8 +49,8 @@ func (ctx *Context) parseForm() *paramForm {
 		ctx.Request.ParseForm()
 		ctx.SetFormParsed()
 	}
-
 	form := paramForm{ctx.Request.Form, map[string]interface{}{}}
+
 	payload := struct {
 		Filter []struct {
 			Name   string      `json:"name"`
@@ -64,19 +66,21 @@ func (ctx *Context) parseForm() *paramForm {
 			form.Payload[k] = v[0]
 		}
 	}
-	for _, v := range ctx.Request.Cookies() {
-		form.Payload[v.Name] = v.Value
-	}
+	//for _, v := range ctx.Request.Cookies() {
+	//	form.Payload[v.Name] = v.Value
+	//}
 	for _, v := range ctx.Params {
 		form.Payload[v.Key] = v.Value
 	}
 
 	method := ctx.Request.Method
-	if method == "POST" || method == "PUT" {
+	if method == "POST" || method == "PUT" || method == "DELETE" {
 		var data interface{}
-		ctx.Bind(&data)
-		obj.Copy(&payload, &data)
-		obj.Copy(&form.Payload, &data)
+		if ctx.Request.Body != http.NoBody {
+			ctx.Bind(&data)
+			obj.Copy(&payload, &data)
+			obj.Copy(&form.Payload, &data)
+		}
 	}
 
 	for _, v := range payload.Filter {
@@ -181,6 +185,15 @@ func (ctx *Context) param(keys ...interface{}) map[string]interface{} {
 			for _, k := range key.([]E) {
 				params[string(k)] = form.Get(string(k))
 			}
+
+		case []RS:
+			for _, k := range key.([]RS) {
+				v := form.Payload[string(k)]
+				params[string(k)] = v
+				if v == nil {
+					ctx.jsonFailure("Param `" + string(k) + "` is required")
+				}
+			}
 		default:
 			obj.Copy(key, &form.Payload)
 			// ctx.Bind(key)
@@ -195,28 +208,24 @@ func (ctx *Context) queryCtrl(query *def.Query) {
 	if query.Pager == nil {
 		query.Pager = &def.Pager{}
 	}
-	query.Pager.Page = 1
+	query.Pager.PageNum = 1
 	query.Pager.PageSize = PageSizeDefault
 
-	if page := toInt(form.Get("page")); page > 1 {
-		query.Pager.Page = page
+	if page := toInt(form.Get("pageNum")); page > 1 {
+		query.Pager.PageNum = page
 	}
 
-	pageSize := toInt(form.Get("page_size"))
-	if pageSize <= 0 {
-		query.Pager.PageSize = PageSizeMax
-	}
-
-	if pageSize >= PageSizeMin && pageSize <= PageSizeMax {
+	if pageSize := toInt(form.Get("pageSize")); pageSize >= PageSizeMin && pageSize <= PageSizeMax {
 		query.Pager.PageSize = pageSize
 	}
 
-	if matched, _ := regexp.MatchString("^\\w+$", form.Get("order_by")); matched {
-		if query.Sorting == nil {
-			query.Sorting = &def.Sorting{}
-		}
+	if query.Sorting == nil {
+		query.Sorting = &def.IdDesc
+	}
+
+	if form.Get("order_by") != "" {
 		query.Sorting.OrderBy = form.Get("order_by")
-		if strings.ToLower(form.Get("sort")) == "desc" {
+		if strings.ToLower(form.Get("sort")) == "desc" || form.Get("sort") == "" {
 			query.Sorting.Sort = "desc"
 		} else {
 			query.Sorting.Sort = "asc"
