@@ -3,9 +3,9 @@ package db
 import (
 	"fmt"
 	"os"
+	"pure-init/lib/log"
 	"pure-init/lib/obj"
 
-	"github.com/cihub/seelog"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/olebedev/config"
@@ -29,7 +29,7 @@ type Logger struct {
 }
 
 func (logger Logger) Print(v ...interface{}) {
-	seelog.Trace(gorm.LogFormatter(v...)...)
+	log.Info(gorm.LogFormatter(v...)...)
 }
 
 func InitDBWithConfig(cfg *config.Config) error {

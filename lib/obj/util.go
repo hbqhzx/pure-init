@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/cihub/seelog"
 	"github.com/remrain/weakjson"
 	"os"
 	"path/filepath"
+	"pure-init/lib/log"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -151,13 +151,13 @@ func Retry(desc string, retryTimes int, method func() error) (err error) {
 		if err == nil {
 			return
 		} else if err == sql.ErrNoRows {
-			seelog.Warnf("%s no rows found: %s", desc, err)
+			log.Warnf("%s no rows found: %s", desc, err)
 			return
 		}
-		seelog.Warnf("%s failed: %s, retry %d times", desc, err, i)
+		log.Warnf("%s failed: %s, retry %d times", desc, err, i)
 		time.Sleep(time.Duration(i*i) * time.Second)
 	}
-	seelog.Warnf("%s failed after retry %d times, last error: %s", desc, retryTimes, err)
+	log.Warnf("%s failed after retry %d times, last error: %s", desc, retryTimes, err)
 	return err
 }
 

@@ -29,9 +29,6 @@ func main() {
 	redis.InitRedisWithConfig(redisConf)
 
 	dbConf, _ := config.Config.Get("database")
-	if err := log.InitLogWithConfig("api"); err != nil {
-		return
-	}
 	db.InitDBWithConfig(dbConf)
 
 	server.StartHttp("0.0.0.0:8023")
